@@ -1,0 +1,39 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - name: RemoveHopByHopHeaders
+      routes:
+        - id: catalog
+          uri: http://catalog-service:8081
+          predicates:
+            - Path=/api/catalog/**
+          filters:
+            - StripPrefix=1
+        - id: cart
+          uri: http://cart-service:8082
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - StripPrefix=1
+        - id: checkout
+          uri: http://checkout-service:8085
+          predicates:
+            - Path=/api/checkout/**
+          filters:
+            - StripPrefix=1
+        - id: orders
+          uri: http://order-service:8083
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
